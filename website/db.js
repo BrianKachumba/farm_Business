@@ -1,18 +1,21 @@
-// db.js
-const mysql = require('mysql2');
+const sqlite3 = require("sqlite3").verbose();
 
-// Create a connection pool
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root', // Replace with your MySQL username
-  password: 'Hello_world1!', // Replace with your MySQL password
-  database: 'ecommerce_platform', // Your database name
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+// Connect to SQLite database (or create it if it doesn't exist)
+const db = new sqlite3.Database("./comments.db", (err) => {
+    if (err) {
+        console.error("Error connecting to database:", err.message);
+    } else {
+        console.log("Connected to the SQLite database.");
+        // Create a table for comments if it doesn't exist
+        db.run(`
+            CREATE TABLE IF NOT EXISTS comments (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                comment TEXT NOT NULL
+            )
+        `);
+    }
 });
 
-// Export a promise-based pool for cleaner code
-const promisePool = pool.promise();
+module.exports = db;
 
-module.exports = promisePool;

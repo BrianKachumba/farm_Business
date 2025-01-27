@@ -30,13 +30,17 @@
         </div>
     </header>
             <aside>
+
+
                 <h2>Share you comment</h2>
                 <h1>Share and recommend on the best products!</h1>
-                <form action="/comments" method="post">
-                    <input type="text" name="first-name" placeholder="first name">
-                    <textarea name="description">Enter your comment here!</textarea>
-                    <input type="submit" value="Submit">
-                </form>               
+                <div id="suggestions"></div>
+                <form id="commentForm">
+                    <input type="text" id="name" placeholder="Your Name" required />
+                    <textarea id="comment" placeholder="Your Comment" required></textarea>
+                    <button type="submit">Post Comment</button>
+                </form>
+       
             </aside>
 
    

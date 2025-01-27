@@ -92,33 +92,54 @@ function updateCartCount() {
     cartBtn.textContent = `Cart (${cartCount})`;
 }
 
-
-
+// Fetch and display comments when the page loads
 getComments();
-function getComments(){
-    $.get("/comments", function(data){
-        if (!data){
-            console.log("No data recieved");
-        }
-        console.log("Data recieved");
-        for(var i=0; i < data.length; 1++){
-            console.log(data[1].name);
 
+function getComments() {
+    $.get("/comments", function (data) {
+        if (!data) {
+            console.log("No data received");
+            return;
         }
+        console.log("Data received");
         showComments(data);
     });
 }
-function showComments(comments){
-    var commentsSection = document.getElementById("seggestions");
-    for (var i = 0; i < comments.length;1++){
+
+function showComments(comments) {
+    var commentsSection = document.getElementById("suggestions");
+    commentsSection.innerHTML = ""; // Clear previous comments
+    for (var i = 0; i < comments.length; i++) {
         var section = document.createElement("section");
-        section.className += "seggestion";
-        var heading = createElement("h3");
-        heading.innerHTML = comments[1].name;
-        var comments = document.createElement("p");
-        comments.innerHTML = comments[1].comments;
+        section.className += "suggestion";
+
+        var heading = document.createElement("h3");
+        heading.innerHTML = comments[i].name;
+
+        var commentText = document.createElement("p");
+        commentText.innerHTML = comments[i].comment;
+
         section.appendChild(heading);
-        section.appendChild(comments);
+        section.appendChild(commentText);
         commentsSection.appendChild(section);
     }
 }
+
+// Handle form submission
+$("#commentForm").submit(function (event) {
+    event.preventDefault();
+    const name = $("#name").val();
+    const comment = $("#comment").val();
+
+    $.post("/comments", { name, comment }, function (data) {
+        if (data.error) {
+            console.error(data.error);
+            return;
+        }
+        // Clear the form
+        $("#name").val("");
+        $("#comment").val("");
+        // Refresh comments
+        getComments();
+    });
+});
